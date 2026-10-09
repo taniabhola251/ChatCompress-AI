@@ -584,6 +584,7 @@ function App() {
     [inputText, inputPreview],
   )
   const analysis = useMemo(() => buildAnalysis(messages, userName), [messages, userName])
+  const repeatedRequests = useMemo(() => findRepeatedRequests(messages), [messages])
   const prioritySourceMessages = useMemo(
     () => conversations.length ? conversations.flatMap((conversation) => conversation.messages) : analysis.rankedMessages,
     [conversations, analysis.rankedMessages],
@@ -891,6 +892,62 @@ function App() {
         </div>
       </section>
 
+      <section className="panel important-points-panel" aria-labelledby="important-points-title">
+        <div className="panel-header">
+          <div>
+            <span className="eyebrow">A FRIENDLY CATCH-UP</span>
+            <h3 id="important-points-title">Important points, in simple words</h3>
+            <p className="panel-subtitle">Here are the key things ChatCompress noticed, grouped so you can scan them quickly.</p>
+          </div>
+        </div>
+        <p className="plain-summary">{analysis.summaryText || 'Import a conversation to get a simple summary of its key points.'}</p>
+        <div className="important-points-grid">
+          <article className="important-point-group attention">
+            <h4><span aria-hidden="true">!</span> Messages to notice</h4>
+            {analysis.importantMessages.length ? (
+              <ul>{analysis.importantMessages.map((message) => <li key={message.id}>{message.sender}: {message.text}</li>)}</ul>
+            ) : <p>No messages were flagged for extra attention.</p>}
+          </article>
+          <article className="important-point-group tasks">
+            <h4><span aria-hidden="true">✓</span> Things to do</h4>
+            {analysis.actions.length ? (
+              <ul>{analysis.actions.map((action) => <li key={action.id}>{action.description} <small>({action.assigned === 'You' ? 'assigned to you' : `assigned to ${action.assigned.toLowerCase()}`}; date: {action.deadline})</small></li>)}</ul>
+            ) : <p>No clear follow-up tasks were found.</p>}
+          </article>
+          <article className="important-point-group dates">
+            <h4><span aria-hidden="true">◷</span> Dates to remember</h4>
+            {analysis.deadlines.length ? (
+              <ul>{analysis.deadlines.map((deadline) => <li key={deadline.id}>{detectDeadline(deadline.text)}: {deadline.text}</li>)}</ul>
+            ) : <p>No dates or deadlines were found.</p>}
+          </article>
+          <article className="important-point-group decisions">
+            <h4><span aria-hidden="true">◇</span> Decisions and updates</h4>
+            {analysis.decisions.length ? (
+              <ul>{analysis.decisions.map((decision) => <li key={decision.id}>{decision.detail}</li>)}</ul>
+            ) : <p>No clear decisions or meeting updates were found.</p>}
+          </article>
+          <article className="important-point-group questions">
+            <h4><span aria-hidden="true">?</span> Questions to follow up</h4>
+            {analysis.questions.length ? (
+              <ul>{analysis.questions.map((question) => <li key={question.id}>{question.sender}: {question.text}</li>)}</ul>
+            ) : <p>No questions were found in this conversation.</p>}
+          </article>
+          <article className="important-point-group topics">
+            <h4><span aria-hidden="true">✦</span> Main topics</h4>
+            {analysis.topics.length
+              ? <div className="topic-chips">{analysis.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>
+              : <p>There are not enough repeated words to identify main topics yet.</p>}
+          </article>
+          {repeatedRequests.length > 0 && (
+            <article className="important-point-group repeats">
+              <h4><span aria-hidden="true">↻</span> Requests that came up more than once</h4>
+              <ul>{repeatedRequests.map((pair) => <li key={`${pair.first.id}-${pair.second.id}`}>{pair.first.text} <small>and</small> {pair.second.text}</li>)}</ul>
+            </article>
+          )}
+        </div>
+        <p className="important-points-note">These are suggestions from local text-matching rules. Please check the original messages before acting on them.</p>
+      </section>
+
       <section className="panel-grid two-up">
         <div className="panel">
           <div className="panel-header">
@@ -927,12 +984,12 @@ function App() {
           </div>
         </div>
       </section>
-      {findRepeatedRequests(messages).length > 0 && (
+      {repeatedRequests.length > 0 && (
         <section className="panel">
           <div className="panel-header"><h3>Repeated requests</h3></div>
           <p className="panel-subtitle">Possible repeats are estimated using shared keywords. Verify the original messages.</p>
           <div className="repeated-list">
-            {findRepeatedRequests(messages).slice(0, 3).map((pair) => (
+            {repeatedRequests.slice(0, 3).map((pair) => (
               <article className="repeated-item" key={`${pair.first.id}-${pair.second.id}`}>
                 <span className="roadmap-label">SIMILARITY ESTIMATE</span>
                 <p><strong>{pair.first.sender}:</strong> {pair.first.text}</p>

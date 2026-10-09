@@ -3035,6 +3035,10 @@ button,
   .priority-filter-row {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .important-points-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Avoid animating every message in a large imported conversation. */
@@ -3611,6 +3615,160 @@ body.page-hidden .page-shell::before {
 .summary-card strong {
   color: #f8ecfb;
   font-size: 0.91rem;
+}
+
+.important-points-panel {
+  border-color: rgba(195, 143, 246, 0.26);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(168, 85, 247, 0.12), transparent 42%),
+    linear-gradient(145deg, rgba(34, 19, 49, 0.9), rgba(18, 11, 31, 0.9));
+}
+
+.important-points-panel .panel-header {
+  margin-bottom: 12px;
+}
+
+.important-points-panel .eyebrow {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.important-points-panel .panel-subtitle {
+  margin: 5px 0 0;
+}
+
+.plain-summary {
+  margin: 0 0 16px;
+  border-left: 3px solid #c084fc;
+  border-radius: 0 12px 12px 0;
+  background: rgba(168, 85, 247, 0.09);
+  color: #f5eafa;
+  padding: 13px 15px;
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+.important-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.important-point-group {
+  min-width: 0;
+  border: 1px solid rgba(225, 177, 242, 0.13);
+  border-radius: 15px;
+  background: rgba(9, 6, 18, 0.35);
+  padding: 13px 14px;
+}
+
+.important-point-group h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 9px;
+  color: #f5eafa;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.important-point-group h4 > span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  border: 1px solid rgba(225, 177, 242, 0.17);
+  border-radius: 9px;
+  background: rgba(168, 85, 247, 0.12);
+  color: #e9a8fc;
+}
+
+.important-point-group.attention h4 > span { color: #fda4af; background: rgba(251, 113, 133, 0.12); }
+.important-point-group.tasks h4 > span { color: #6ee7b7; background: rgba(52, 211, 153, 0.1); }
+.important-point-group.dates h4 > span { color: #fdba74; background: rgba(251, 146, 60, 0.12); }
+.important-point-group.decisions h4 > span { color: #5eead4; background: rgba(45, 212, 191, 0.1); }
+.important-point-group.questions h4 > span { color: #7dd3fc; background: rgba(56, 189, 248, 0.1); }
+
+.important-point-group ul {
+  display: grid;
+  gap: 7px;
+  max-height: 210px;
+  overflow: auto;
+  margin: 0;
+  padding-left: 17px;
+  color: #e4d9ec;
+  font-size: 0.79rem;
+  line-height: 1.55;
+}
+
+.important-point-group li {
+  padding-left: 2px;
+  overflow-wrap: anywhere;
+}
+
+.important-point-group li::marker {
+  color: #ce8df4;
+}
+
+.important-point-group li small {
+  color: #c4b2ce;
+  font-size: 0.72rem;
+}
+
+.important-point-group > p {
+  margin: 0;
+  color: #c9b8d2;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.topic-chips span {
+  border: 1px solid rgba(168, 85, 247, 0.27);
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.12);
+  color: #e7c6fa;
+  padding: 5px 9px;
+  font-size: 0.72rem;
+}
+
+.important-points-note {
+  margin: 13px 0 0;
+  color: #c4b2ce;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.theme-light .important-points-panel,
+.theme-light .important-point-group {
+  border-color: rgba(109, 74, 132, 0.18);
+  background: rgba(255, 252, 255, 0.8);
+}
+
+.theme-light .plain-summary {
+  background: rgba(168, 85, 247, 0.08);
+  color: #39234a;
+}
+
+.theme-light .important-point-group h4,
+.theme-light .important-point-group ul {
+  color: #362344;
+}
+
+.theme-light .important-point-group > p,
+.theme-light .important-point-group li small,
+.theme-light .important-points-note {
+  color: #685576;
+}
+
+.theme-light .topic-chips span {
+  color: #5b2d73;
 }
 
 .message-card {
@@ -4204,5 +4362,11 @@ select:focus-visible {
   .catchup-button::after,
   .nav-count {
     animation: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .important-points-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
